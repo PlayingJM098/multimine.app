@@ -6,17 +6,17 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GAME.HelpController">
    <top>
-      <VBox prefHeight="98.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="98.0" prefWidth="561.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" prefHeight="44.0" prefWidth="48.0" text="X" textFill="#0d0d0d">
+            <!-- Add onAction here -->
+            <Button mnemonicParsing="false" prefHeight="44.0" prefWidth="48.0" text="X" textFill="#0d0d0d" onAction="#handleCloseButtonAction">
                <font>
                   <Font size="21.0" />
                </font>
             </Button>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="How To Play" textAlignment="CENTER" wrappingWidth="594.13671875">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="How To Play" textAlignment="CENTER" wrappingWidth="449.13671875">
                <font>
                   <Font name="System Bold" size="30.0" />
                </font>
@@ -25,29 +25,14 @@
       </VBox>
    </top>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="279.0" prefWidth="568.0" BorderPane.alignment="CENTER">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="INSERT GAME INSTRUCTIONS HERE" textAlignment="CENTER" wrappingWidth="600.16015625">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="INSERT GAME INSTRUCTIONS HERE" textAlignment="CENTER" wrappingWidth="600.16015625">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="INSERT GAME INSTRUCTIONS HERE" textAlignment="CENTER" wrappingWidth="600.16015625">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="INSERT GAME INSTRUCTIONS HERE" textAlignment="CENTER" wrappingWidth="600.16015625">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Press Multiplayer Mode to enter multiplayer. Multiplayer mode finds a match with another player to play with. Both players have their own board and 3 lives. The player can see the opponent's board and lives on the upper right corner of the screen. The goal of both players is to clear all the tiles on their board. Clicking on a tile has a chance of clearing it or having a mine in it. If player clicks on a tile that has a mine, they lose a life. There is also a 10 s timer for both players at the start. If they click a tile, timer gets increased by 0.5 s. If the timer runs out or lose all lives, the player loses." wrappingWidth="447.16015625">
                <font>
                   <Font size="14.0" />
                </font>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="INSERT GAME INSTRUCTIONS HERE" textAlignment="CENTER" wrappingWidth="600.16015625">
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Press Zen mode to enter zen. Zen mode is single player and endless meaning there is infinite time. The goal of this mode is just the same to clear out as much tiles as possible." wrappingWidth="440.46484375">
                <font>
                   <Font size="14.0" />
                </font>
