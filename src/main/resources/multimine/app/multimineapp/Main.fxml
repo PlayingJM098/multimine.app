@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="multimine.app.multimineapp.MainController">
    <top>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PLAYINGJM098" textAlignment="CENTER" wrappingWidth="414.609375" BorderPane.alignment="CENTER">
          <font>
@@ -66,7 +66,7 @@
             <HBox prefHeight="17.0" prefWidth="476.0">
                <children>
                   <HBox prefHeight="22.0" prefWidth="124.0" />
-                  <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="54.0" text="HELP" />
+                  <Button mnemonicParsing="false" prefHeight="20.0" prefWidth="54.0" text="HELP" onAction="#openHelp"/>
                </children>
             </HBox>
             <HBox prefHeight="30.0" prefWidth="476.0">
