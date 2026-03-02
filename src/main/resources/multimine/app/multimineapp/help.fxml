@@ -8,7 +8,6 @@
    <top>
       <VBox prefHeight="98.0" prefWidth="561.0" BorderPane.alignment="CENTER">
          <children>
-            <!-- Add onAction here -->
             <Button mnemonicParsing="false" onAction="#handleCloseButtonAction" prefHeight="44.0" prefWidth="48.0" text="X" textFill="#0d0d0d">
                <font>
                   <Font size="21.0" />
