@@ -23,17 +23,6 @@ public class MainController {
         stage.setTitle("How to Play");
         stage.show();
     }
-
-    public void returnToMain(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-
-        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-
-        stage.setScene(new Scene(root));
-        stage.setTitle("MultiMine");
-        stage.show();
-    }
-        
-
 }
+
 
