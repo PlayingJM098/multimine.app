@@ -25,7 +25,7 @@ public class MainController {
     }
 
     public void returnToMain(ActionEvent event) throws IOException {
-        Parent root = FXMLLLoader.load(getClass().getResource("Main.fxml");
+        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
 
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
 
@@ -36,3 +36,4 @@ public class MainController {
         
 
 }
+
