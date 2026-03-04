@@ -21,4 +21,18 @@ public class ZenSumController {
             e.printStackTrace();
         }
     }
+
+    public void handleRetryButtonAction(ActionEvent event) {
+        try {
+            Parent mainRoot = FXMLLoader.load(getClass().getResource("zen.fxml"));
+            Scene mainScene = new Scene(mainRoot);
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(mainScene);
+            stage.setTitle("Zen");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    
 }
