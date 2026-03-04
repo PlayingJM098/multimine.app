@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 /* Screens submitted
     Main Scene (Main.fxml)
-    Zen Game Summary Scene (scree.fxml)
+    Zen Game Summary Scene (zensum.fxml)
     Help/Instructions Scene (help.fxml)*/
 public class Main extends Application {
     @Override
