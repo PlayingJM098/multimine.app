@@ -1,1 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="multimine.app.multimineapp.ZenController">
+   <bottom>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PLAYINGJM098" wrappingWidth="312.5366744995117" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="Courier New" size="43.0" />
+         </font>
+      </Text>
+   </bottom>
+   <top>
+      <AnchorPane prefHeight="66.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="52.0" fitWidth="52.0" layoutX="158.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../img/clock.png" />
+               </image>
+            </ImageView>
+            <Text layoutX="275.0" layoutY="67.0" strokeType="OUTSIDE" strokeWidth="0.0" text="∞" wrappingWidth="8.20269775390625">
+               <font>
+                  <Font name="Courier New" size="96.0" />
+               </font>
+            </Text>
+         </children></AnchorPane>
+   </top>
+   <center>
+      <GridPane fx:id="grid" alignment="CENTER" hgap="2" vgap="2" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
