@@ -7,12 +7,22 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Tile;
 import java.util.Objects;
+import model.Stopwatch;
 
 public class ZenController {
-
+    @FXML
+    private Text timerText;
+    @FXML
+    private ImageView heart1;
+    @FXML
+    private ImageView heart2;
+    @FXML
+    private ImageView heart3;
+    private Stopwatch stopwatch = new Stopwatch();
     @FXML
     private GridPane grid;
 
@@ -49,7 +59,9 @@ public class ZenController {
                 grid.add(view, col, row);
             }
         }
-
+        stopwatch.start(() -> {
+            timerText.setText(stopwatch.getFormattedTime());
+        });
         placeMines();
     }
 
@@ -75,8 +87,19 @@ public class ZenController {
             tile.getView().setImage(bombTile);
 
             minesCount++;
-
+            switch (minesCount){
+                case 1:
+                    heart3.setVisible(false);
+                    break;
+                case 2:
+                    heart2.setVisible(false);
+                    break;
+                case 3:
+                    heart1.setVisible(false);
+                    break;
+            }
             if (minesCount >= 3) {
+                stopwatch.stop();
                 showZenSummary(tile.getView());
             }
 
@@ -92,9 +115,14 @@ public class ZenController {
 
         try {
 
-            Parent root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("zensum.fxml")
             );
+
+            Parent root = loader.load();
+
+            ZenSumController controller = loader.getController();
+            controller.setTime(stopwatch.getFormattedTime());
 
             Stage stage = (Stage) tile.getScene().getWindow();
 
