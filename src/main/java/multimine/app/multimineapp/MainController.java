@@ -25,6 +25,16 @@ public class MainController {
         stage.setTitle("How to Play");
         stage.show();
     }
+    public void openZen(ActionEvent event) throws IOException {
+        Parent root = FXMLLoader.load(
+                getClass().getResource("zen.fxml")
+        );
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.setTitle("Zen");
+        stage.show();
+    }
     @FXML
     public void openSettings(MouseEvent event) throws IOException {
 
@@ -39,5 +49,6 @@ public class MainController {
         stage.show();
     }
 }
+
 
 
