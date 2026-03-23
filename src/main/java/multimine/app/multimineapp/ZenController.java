@@ -36,7 +36,7 @@ public class ZenController {
 
     private Image bombTile =
             new Image(Objects.requireNonNull(
-                    getClass().getResourceAsStream("/img/explode.png")));
+                    getClass().getResourceAsStream("/img/bomb.png")));
 
     @FXML
     public void initialize() {
