@@ -1,13 +1,21 @@
 package multimine.app.multimineapp;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ZenSumController {
+    @FXML
+    private Text finalTime;
+
+    public void setTime(String time) {
+        finalTime.setText(time);
+    }
     public void handleCloseButtonAction(ActionEvent event) {
         try {
             Parent mainRoot = FXMLLoader.load(getClass().getResource("Main.fxml"));
@@ -34,5 +42,6 @@ public class ZenSumController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }
