@@ -9,6 +9,7 @@ public class Tile {
     private boolean mine;
     private boolean revealed;
     private ImageView view;
+    private boolean flagged;
 
     public Tile(int row, int col, ImageView view) {
         this.row = row;
@@ -17,7 +18,13 @@ public class Tile {
         this.mine = false;
         this.revealed = false;
     }
+    public boolean isFlagged() {
+        return flagged;
+    }
 
+    public void setFlagged(boolean flagged) {
+        this.flagged = flagged;
+    }
     public boolean hasMine() {
         return mine;
     }
