@@ -27,7 +27,7 @@ public class ZenController {
     private Image[] numberTiles = new Image[9];
     private ZenBoard board;
     private int minesCount = 0;
-
+    private Image flagTile;
     private Stopwatch stopwatch = new Stopwatch();
 
     private Image hiddenTile =
@@ -40,7 +40,8 @@ public class ZenController {
 
     @FXML
     public void initialize() {
-
+        flagTile = new Image(Objects.requireNonNull(
+                getClass().getResourceAsStream("/img/flag.png")));
         board = new ZenBoard(SIZE);
 
         board.createBoard(hiddenTile, grid);
@@ -51,7 +52,13 @@ public class ZenController {
                 int r = row;
                 int c = col;
 
-                board.getTile(r,c).getView().setOnMouseClicked(e -> handleClick(r,c));
+                board.getTile(r, c).getView().setOnMouseClicked(e -> {
+                    if (e.getButton() == javafx.scene.input.MouseButton.SECONDARY) {
+                        handleRightClick(r, c);
+                    } else {
+                        handleClick(r, c);
+                    }
+                });
             }
         }
         for (int i = 0; i <= 8; i++) {
@@ -64,12 +71,25 @@ public class ZenController {
                 timerText.setText(stopwatch.getFormattedTime())
         );
     }
-
-    private void handleClick(int row, int col) {
+    private void handleRightClick(int row, int col) {
 
         Tile tile = board.getTile(row, col);
 
         if (tile.isRevealed()) return;
+
+        if (!tile.isFlagged()) {
+            tile.setFlagged(true);
+            tile.getView().setImage(flagTile);
+        } else {
+            tile.setFlagged(false);
+            tile.getView().setImage(hiddenTile);
+        }
+    }
+    private void handleClick(int row, int col) {
+
+        Tile tile = board.getTile(row, col);
+
+        if (tile.isRevealed() || tile.isFlagged()) return;
 
         tile.reveal();
 
