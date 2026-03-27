@@ -1,14 +1,13 @@
 package multimine.app.multimineapp;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Node;
-
+import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 
 public class MainController {
@@ -25,6 +24,7 @@ public class MainController {
         stage.setTitle("How to Play");
         stage.show();
     }
+
     public void openZen(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(
                 getClass().getResource("zen.fxml")
@@ -48,7 +48,17 @@ public class MainController {
         stage.setTitle("Settings");
         stage.show();
     }
+    public void openMultiplayer(ActionEvent event) throws IOException {
+
+        Parent root = FXMLLoader.load(
+                getClass().getResource("multiplayer.fxml")
+        );
+
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+
+        stage.setScene(new Scene(root));
+        stage.setTitle("Multiplayer");
+        stage.show();
+    }   
+
 }
-
-
-
