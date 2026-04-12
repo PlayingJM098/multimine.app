@@ -45,8 +45,7 @@ public class ZenController {
         loadNumberTiles();
         
         board = new ZenBoard(SIZE, hiddenTile, flagTile, bombTile, numberTiles, grid, 
-                           tile -> showZenSummary(tile, stopwatch.getFormattedTime()), 
-                           this::updateHearts, stopwatch);
+                           this, stopwatch);
         
         board.initializeBoard(10);
         setupClickHandlers();
@@ -86,7 +85,7 @@ public class ZenController {
         if (minesCount == 3) heart1.setVisible(false);
     }
 
-    private void showZenSummary(ImageView tile, String time) {
+    public void showZenSummary(ImageView tile, String time) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("zensum.fxml"));
             Parent root = loader.load();
