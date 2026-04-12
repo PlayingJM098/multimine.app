@@ -85,16 +85,21 @@ public class ZenController {
         if (minesCount == 3) heart1.setVisible(false);
     }
 
-    public void showZenSummary(ImageView tile, String time) {
+    public void showZenSummary(ImageView tile, String time, boolean isWin) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("zensum.fxml"));
             Parent root = loader.load();
             ZenSumController controller = loader.getController();
-            controller.setTime(time);
-
-            Stage stage = (Stage) tile.getScene().getWindow();
+            controller.setTime(time, isWin);
+            Stage stage;
+            if (tile != null) {
+                stage = (Stage) tile.getScene().getWindow();
+            } else {
+                // For win condition, get stage from current scene
+                stage = (Stage) grid.getScene().getWindow();
+            }
             stage.setScene(new Scene(root));
-            stage.setTitle("Zen Summary");
+            stage.setTitle(isWin ? "Zen Victory!" : "Zen Summary");
         } catch (Exception e) {
             e.printStackTrace();
         }
