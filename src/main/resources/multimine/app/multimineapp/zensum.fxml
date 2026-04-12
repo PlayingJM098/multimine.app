@@ -12,7 +12,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="479.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="multimine.app.multimineapp.ZenSumController">
     <top>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="GAME OVER" textAlignment="CENTER" wrappingWidth="391.45348358154297" BorderPane.alignment="CENTER">
+        <Text fx:id="titleText" strokeType="OUTSIDE" strokeWidth="0.0" text="GAME OVER" textAlignment="CENTER" wrappingWidth="391.45348358154297" BorderPane.alignment="CENTER">
             <font>
                 <Font name="Courier New Bold" size="40.0" />
             </font>
@@ -53,7 +53,7 @@
     <right>
         <AnchorPane prefHeight="254.0" prefWidth="304.0" BorderPane.alignment="CENTER">
             <children>
-                <Text layoutX="28.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You clicked on a mine 3 times!" wrappingWidth="261.0556640625">
+                <Text fx:id="messageText" layoutX="28.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You clicked on a mine 3 times!" wrappingWidth="261.0556640625">
                     <font>
                         <Font name="Courier New" size="19.0" />
                     </font>
