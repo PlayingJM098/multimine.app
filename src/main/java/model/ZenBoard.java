@@ -18,7 +18,8 @@ public class ZenBoard {
     private ZenController controller;
     private Stopwatch stopwatch;
     private int minesCount = 0;
-
+    private int safeTilesCount;
+    private int revealedSafeTiles = 0;
     public ZenBoard(int size, Image hiddenTile, Image flagTile, Image bombTile, 
                    Image[] numberTiles, GridPane grid, 
                    ZenController controller,
@@ -36,6 +37,7 @@ public class ZenBoard {
 
     public void initializeBoard(int minesToPlace) {
         createBoard();
+        safeTilesCount = (size * size) - minesToPlace;
         placeMines(minesToPlace);
     }
 
@@ -80,11 +82,17 @@ public class ZenBoard {
 
             if (minesCount >= 3) {
                 stopwatch.stop();
-                controller.showZenSummary(tile.getView(), stopwatch.getFormattedTime());
+                controller.showZenSummary(tile.getView(), stopwatch.getFormattedTime(), false);
             }
         } else {
             int count = countAdjacentMines(row, col);
             tile.getView().setImage(numberTiles[count]);
+            revealedSafeTiles++;
+            
+            if (revealedSafeTiles>=safeTilesCount){
+                stopwatch.stop();
+                controller.showZenSummary(null, stopwatch.getFormattedTime(), true);
+            }
         }
 
         tile.getView().setDisable(true);
@@ -115,7 +123,10 @@ public class ZenBoard {
             }
         }
     }
-
+    
+    public int getSafeTilesCount() {
+        return safeTilesCount;
+    }
     public Tile getTile(int r, int c) {
         return board[r][c];
     }
