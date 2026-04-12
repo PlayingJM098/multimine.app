@@ -3,8 +3,8 @@ package model;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import multimine.app.multimineapp.ZenController;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
 
 public class ZenBoard {
 
@@ -15,15 +15,13 @@ public class ZenBoard {
     private Image bombTile;
     private Image[] numberTiles;
     private GridPane grid;
-    private Consumer<ImageView> gameOverCallback;
-    private Consumer<Integer> updateHeartsCallback;
+    private ZenController controller;
     private Stopwatch stopwatch;
     private int minesCount = 0;
 
     public ZenBoard(int size, Image hiddenTile, Image flagTile, Image bombTile, 
                    Image[] numberTiles, GridPane grid, 
-                   Consumer<ImageView> gameOverCallback, 
-                   Consumer<Integer> updateHeartsCallback,
+                   ZenController controller,
                    Stopwatch stopwatch) {
         this.size = size;
         this.hiddenTile = hiddenTile;
@@ -31,8 +29,7 @@ public class ZenBoard {
         this.bombTile = bombTile;
         this.numberTiles = numberTiles;
         this.grid = grid;
-        this.gameOverCallback = gameOverCallback;
-        this.updateHeartsCallback = updateHeartsCallback;
+        this.controller = controller;
         this.stopwatch = stopwatch;
         this.board = new Tile[size][size];
     }
@@ -79,11 +76,11 @@ public class ZenBoard {
         if (tile.hasMine()) {
             tile.getView().setImage(bombTile);
             minesCount++;
-            updateHeartsCallback.accept(minesCount);
+            controller.updateHearts(minesCount);
 
             if (minesCount >= 3) {
                 stopwatch.stop();
-                gameOverCallback.accept(tile.getView());
+                controller.showZenSummary(tile.getView(), stopwatch.getFormattedTime());
             }
         } else {
             int count = countAdjacentMines(row, col);
