@@ -10,11 +10,19 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class ZenSumController {
-    @FXML
-    private Text finalTime;
-
-    public void setTime(String time) {
+    @FXML private Text finalTime;
+    @FXML private Text titleText;
+    @FXML private Text messageText;
+    
+    public void setTime(String time, boolean isWin) {
         finalTime.setText(time);
+        if (isWin) {
+            titleText.setText("YOU WIN!");
+            messageText.setText("All safe tiles are cleared!");
+        } else {
+            titleText.setText("GAME OVER");
+            messageText.setText("You clicked on a mine 3 times!");
+        }
     }
     public void handleCloseButtonAction(ActionEvent event) {
         try {
