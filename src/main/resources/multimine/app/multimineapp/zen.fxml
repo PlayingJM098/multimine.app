@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="multimine.app.multimineapp.ZenController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="590.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="multimine.app.multimineapp.ZenController">
    <top>
       <AnchorPane prefHeight="66.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
@@ -24,7 +18,7 @@
                   <Font name="Courier New" size="96.0" />
                </font>
             </Text>
-            <Text layoutX="519.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00" fx:id="timerText" wrappingWidth="30.13671875" />
+            <Text fx:id="timerText" layoutX="519.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="00:00" wrappingWidth="30.13671875" />
          </children></AnchorPane>
    </top>
    <bottom>
@@ -35,17 +29,17 @@
                   <Font name="Courier New" size="43.0" />
                </font>
             </Text>
-            <ImageView fitHeight="44.0" fitWidth="45.0" layoutX="233.0" layoutY="51.0" pickOnBounds="true" fx:id="heart1" preserveRatio="true">
+            <ImageView fx:id="heart1" fitHeight="44.0" fitWidth="45.0" layoutX="233.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/heart.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="44.0" fitWidth="44.0" layoutX="278.0" layoutY="51.0" pickOnBounds="true" fx:id="heart2" preserveRatio="true">
+            <ImageView fx:id="heart2" fitHeight="44.0" fitWidth="44.0" layoutX="279.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/heart.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="44.0" fitWidth="44.0" layoutX="328.0" layoutY="51.0" pickOnBounds="true" fx:id="heart3" preserveRatio="true">
+            <ImageView fx:id="heart3" fitHeight="44.0" fitWidth="44.0" layoutX="327.0" layoutY="51.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../../img/heart.png" />
                </image>
