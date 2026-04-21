@@ -11,7 +11,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.MultiBoard;
-import model.Tile;
 import java.util.Objects;
 
 public class MultiController {
@@ -21,23 +20,13 @@ public class MultiController {
     @FXML private Text turnText;
     
     @FXML private ImageView heart1, heart2, heart3;  // Player 1 hearts
-    @FXML private ImageView heart4, heart5, heart6;  // Player 2 hearts (right side)
+    @FXML private ImageView heart4, heart5, heart6;  // Player 2 hearts
 
     private final int SIZE = 15;
     private Image[] numberTiles = new Image[9];
     private Image flagTile, hiddenTile, bombTile, heartImage;
     private MultiBoard board;
-    private int clicksThisTurn = 0;
-    private String player1Name = "Player 1";
-    private String player2Name = "Player 2";
-    private boolean player1Turn = true;
-    private int player1Lives = 3;
-    private int player2Lives = 3;
-    private double player1Time = 10.0;  // 10 seconds
-    private double player2Time = 10.0;
     private AnimationTimer gameTimer;
-    private double player1CumulativeTime = 0.0;
-    private double player2CumulativeTime = 0.0;
 
     @FXML
     public void initialize() {
@@ -45,9 +34,6 @@ public class MultiController {
         board = new MultiBoard(SIZE, hiddenTile, flagTile, bombTile, heartImage, 
                              numberTiles, grid, this);
         board.initializeBoard(10);
-        setupClickHandlers();
-        updateUI();
-        startPlayerTimer();
     }
 
     private void loadImages() {
@@ -57,72 +43,32 @@ public class MultiController {
         heartImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/heart.png")));
         
         for (int i = 0; i <= 8; i++) {
-            numberTiles[i] = new Image(getClass().getResourceAsStream("/img/" + i + ".png"));
-        }
-    }
-    public void playerHitMine(int totalMinesHit) {
-        if (player1Turn) {
-            player1CumulativeTime += (10.0 - player1Time);
-            player1Lives--;
-            updatePlayer1Hearts();
-        } else {
-            player2CumulativeTime += (10.0 - player2Time);
-            player2Lives--;
-            updatePlayer2Hearts();
-        }
-
-        if (isGameOver()) {
-            endGame(false);
+            numberTiles[i] = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/" + i + ".png")));
         }
     }
 
-    private void setupClickHandlers() {
-        for (int row = 0; row < SIZE; row++) {
-            for (int col = 0; col < SIZE; col++) {
-                int r = row, c = col;
-                Tile tile = board.getTile(r, c);
-                tile.getView().setOnMouseClicked(e -> {
-                    if (e.getButton() == javafx.scene.input.MouseButton.SECONDARY) {
-                        board.handleRightClick(r, c);
-                    } else {
-                        board.handleClick(r, c);
-                    }
-                });
-            }
-        }
-    }
-    
-    public void playerSafeClick() {
-        if (player1Turn) {
-            player1Time += 0.1;
-        } else {
-            player2Time += 0.1;
-        }
-    }
-
-    public boolean isGameOver() {
-        return player1Lives <= 0 || player2Lives <= 0;
-    }
-
-    private void startPlayerTimer() {
+    public void startPlayerTimer() {
         gameTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                if (player1Turn) {
-                    player1Time -= 1.0 / 60.0;
-                    timerText.setText(String.format("P1: %.1fs", player1Time));
-                    if (player1Time <= 0) {
-                        // ADD time SPENT to cumulative total
-                        player1CumulativeTime += 10.0;  // Full 10s used
-                        endGame(false);
+                if (board.isPlayer1Turn()) {
+                    board.setPlayer1Time(board.getPlayer1Time() - 1.0 / 60.0); // UPDATE MODEL TIME
+                    timerText.setText(String.format("P1: %.1fs", board.getPlayer1Time()));
+
+                    if (board.getPlayer1Time() <= 0) {
+                        board.setPlayer1CumulativeTime(board.getPlayer1CumulativeTime() + 10.0);
+                        endGame(board.getPlayer1Name(), board.getPlayer1CumulativeTime(), 
+                               board.getPlayer2Name(), board.getPlayer2CumulativeTime(), false);
                         return;
                     }
                 } else {
-                    player2Time -= 1.0 / 60.0;
-                    player2TimerText.setText(String.format("P2: %.1fs", player2Time));
-                    if (player2Time <= 0) {
-                        player2CumulativeTime += 10.0;  // Full 10s used
-                        endGame(false);
+                    board.setPlayer2Time(board.getPlayer2Time() - 1.0 / 60.0); // UPDATE MODEL TIME
+                    player2TimerText.setText(String.format("P2: %.1fs", board.getPlayer2Time()));
+
+                    if (board.getPlayer2Time() <= 0) {
+                        board.setPlayer2CumulativeTime(board.getPlayer2CumulativeTime() + 10.0);
+                        endGame(board.getPlayer1Name(), board.getPlayer1CumulativeTime(), 
+                               board.getPlayer2Name(), board.getPlayer2CumulativeTime(), false);
                         return;
                     }
                 }
@@ -130,41 +76,34 @@ public class MultiController {
         };
         gameTimer.start();
     }
-    public void registerClick() {
-        clicksThisTurn++;
 
-        if (clicksThisTurn >= 2) {
-            clicksThisTurn = 0;
-            switchTurn();
+    private void updateTimerText(double time, boolean isPlayer1) {
+        if (isPlayer1) {
+            timerText.setText(String.format("P1: %.1fs", time));
+        } else {
+            player2TimerText.setText(String.format("P2: %.1fs", time));
         }
     }
-    public boolean isPlayer1Turn() {
-        return player1Turn;
-    }
-    private void switchTurn() {
-        player1Turn = !player1Turn;
-        updateUI();
+
+    public void updateUI() {
+        turnText.setText("It's " + board.getCurrentPlayerName() + "'s turn");
+        timerText.setText(String.format("P1: %.1fs", board.getPlayer1Time()));
+        player2TimerText.setText(String.format("P2: %.1fs", board.getPlayer2Time()));
     }
 
-    private void updateUI() {
-        turnText.setText("It's " + (player1Turn ? player1Name : player2Name) + "'s turn");
-        timerText.setText(String.format("P1: %.1fs", player1Time));
-        player2TimerText.setText(String.format("P2: %.1fs", player2Time));  // UPDATE
+    public void updatePlayer1Hearts(int lives) {
+        heart1.setVisible(lives >= 1);
+        heart2.setVisible(lives >= 2);
+        heart3.setVisible(lives >= 3);
     }
 
-    private void updatePlayer1Hearts() {
-        heart1.setVisible(player1Lives >= 1);
-        heart2.setVisible(player1Lives >= 2);
-        heart3.setVisible(player1Lives >= 3);
+    public void updatePlayer2Hearts(int lives) {
+        heart4.setVisible(lives >= 1);
+        heart5.setVisible(lives >= 2);
+        heart6.setVisible(lives >= 3);
     }
 
-    private void updatePlayer2Hearts() {
-        heart4.setVisible(player2Lives >= 1);
-        heart5.setVisible(player2Lives >= 2);
-        heart6.setVisible(player2Lives >= 3);
-    }
-
-    public void endGame(boolean teamWin) {
+    public void endGame(String p1Name, double p1Time, String p2Name, double p2Time, boolean teamWin) {
         if (gameTimer != null) {
             gameTimer.stop();
         }
@@ -173,7 +112,7 @@ public class MultiController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("multisum.fxml"));
             Parent root = loader.load();
             MultiSumController controller = loader.getController();
-            controller.setResults(player1Name, player1CumulativeTime, player2Name, player2CumulativeTime, teamWin);
+            controller.setResults(p1Name, p1Time, p2Name, p2Time, teamWin);
 
             Stage stage = (Stage) grid.getScene().getWindow();
             if (stage == null) return;
