@@ -33,7 +33,7 @@ public class MultiController {
         loadImages();
         board = new MultiBoard(SIZE, hiddenTile, flagTile, bombTile, heartImage, 
                              numberTiles, grid, this);
-        board.initializeBoard(40);
+        board.initializeBoard(20);
         board.resetGameState();
         startPlayerTimer();
     }
