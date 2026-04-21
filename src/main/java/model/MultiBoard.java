@@ -139,13 +139,9 @@ public class MultiBoard {
         } else {
             // Regular safe click (after first click)
             floodFillReveal(row, col);
-            revealedSafeTiles++;
             playerSafeClick();
         }
 
-        if (revealedSafeTiles >= safeTilesCount) {
-            endGame(true);
-        }
         registerClick();
     }
     private void ensureFirstClickSafe(int clickRow, int clickCol) {
@@ -177,14 +173,22 @@ public class MultiBoard {
     }
     private void floodFillReveal(int row, int col) {
         Tile tile = getTile(row, col);
+
         if (tile.isRevealed() || tile.hasMine() || tile.isFlagged()) return;
 
         tile.reveal();
+        revealedSafeTiles++; // count here
+
         int adjacentMines = countAdjacentMines(row, col);
         tile.getView().setImage(numberTiles[adjacentMines]);
-        tile.getView().setDisable(true); // CRITICAL: Disable each revealed tile
+        tile.getView().setDisable(true);
 
-        // Auto-reveal neighbors if zero mines
+        // ✅ CHECK WIN HERE (every reveal)
+        if (revealedSafeTiles == safeTilesCount) {
+            endGame(true);
+            return;
+        }
+
         if (adjacentMines == 0) {
             for (int r = row - 1; r <= row + 1; r++) {
                 for (int c = col - 1; c <= col + 1; c++) {
