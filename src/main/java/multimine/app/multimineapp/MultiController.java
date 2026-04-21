@@ -33,7 +33,9 @@ public class MultiController {
         loadImages();
         board = new MultiBoard(SIZE, hiddenTile, flagTile, bombTile, heartImage, 
                              numberTiles, grid, this);
-        board.initializeBoard(10);
+        board.initializeBoard(40);
+        board.resetGameState();
+        startPlayerTimer();
     }
 
     private void loadImages() {
@@ -48,41 +50,43 @@ public class MultiController {
     }
 
     public void startPlayerTimer() {
+        if (gameTimer != null) {
+            gameTimer.stop(); // Stop existing timer
+        }
+
         gameTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 if (board.isPlayer1Turn()) {
-                    board.setPlayer1Time(board.getPlayer1Time() - 1.0 / 60.0); // UPDATE MODEL TIME
-                    timerText.setText(String.format("P1: %.1fs", board.getPlayer1Time()));
+                    double newTime = board.getPlayer1Time() - 1.0 / 60.0;
+                    board.setPlayer1Time(newTime);
+                    timerText.setText(String.format("P1: %.1fs", newTime));
 
-                    if (board.getPlayer1Time() <= 0) {
-                        board.setPlayer1CumulativeTime(board.getPlayer1CumulativeTime() + 10.0);
-                        endGame(board.getPlayer1Name(), board.getPlayer1CumulativeTime(), 
+                    if (newTime <= 0) {
+                        double finalTime = board.getPlayer1CumulativeTime() + 10.0;
+                        board.setPlayer1CumulativeTime(finalTime);
+                        endGame(board.getPlayer1Name(), finalTime, 
                                board.getPlayer2Name(), board.getPlayer2CumulativeTime(), false);
                         return;
                     }
                 } else {
-                    board.setPlayer2Time(board.getPlayer2Time() - 1.0 / 60.0); // UPDATE MODEL TIME
-                    player2TimerText.setText(String.format("P2: %.1fs", board.getPlayer2Time()));
+                    double newTime = board.getPlayer2Time() - 1.0 / 60.0;
+                    board.setPlayer2Time(newTime);
+                    player2TimerText.setText(String.format("P2: %.1fs", newTime));
 
-                    if (board.getPlayer2Time() <= 0) {
-                        board.setPlayer2CumulativeTime(board.getPlayer2CumulativeTime() + 10.0);
+                    if (newTime <= 0) {
+                        double finalTime = board.getPlayer2CumulativeTime() + 10.0;
+                        board.setPlayer2CumulativeTime(finalTime);
                         endGame(board.getPlayer1Name(), board.getPlayer1CumulativeTime(), 
-                               board.getPlayer2Name(), board.getPlayer2CumulativeTime(), false);
+                               board.getPlayer2Name(), finalTime, false);
                         return;
                     }
                 }
+                // Update turn indicator every frame
+                turnText.setText("It's " + board.getCurrentPlayerName() + "'s turn");
             }
         };
         gameTimer.start();
-    }
-
-    private void updateTimerText(double time, boolean isPlayer1) {
-        if (isPlayer1) {
-            timerText.setText(String.format("P1: %.1fs", time));
-        } else {
-            player2TimerText.setText(String.format("P2: %.1fs", time));
-        }
     }
 
     public void updateUI() {
