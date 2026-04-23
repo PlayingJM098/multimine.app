@@ -33,7 +33,7 @@ public class MultiController {
         loadImages();
         board = new MultiBoard(SIZE, hiddenTile, flagTile, bombTile, heartImage, 
                              numberTiles, grid, this);
-        board.initializeBoard(20);
+        board.initializeBoard(10);
         board.resetGameState();
         startPlayerTimer();
     }
@@ -50,9 +50,7 @@ public class MultiController {
     }
 
     public void startPlayerTimer() {
-        if (gameTimer != null) {
-            gameTimer.stop(); // Stop existing timer
-        }
+        if (gameTimer != null) gameTimer.stop();
 
         gameTimer = new AnimationTimer() {
             @Override
@@ -61,29 +59,19 @@ public class MultiController {
                     double newTime = board.getPlayer1Time() - 1.0 / 60.0;
                     board.setPlayer1Time(newTime);
                     timerText.setText(String.format("P1: %.1fs", newTime));
-
                     if (newTime <= 0) {
-                        double finalTime = board.getPlayer1CumulativeTime() + 10.0;
-                        board.setPlayer1CumulativeTime(finalTime);
-                        endGame(board.getPlayer1Name(), finalTime, 
-                               board.getPlayer2Name(), board.getPlayer2CumulativeTime(), false);
+                        endGame("Player 1", 0.0, "Player 2", board.getPlayer2Time(), false);
                         return;
                     }
                 } else {
                     double newTime = board.getPlayer2Time() - 1.0 / 60.0;
                     board.setPlayer2Time(newTime);
                     player2TimerText.setText(String.format("P2: %.1fs", newTime));
-
                     if (newTime <= 0) {
-                        double finalTime = board.getPlayer2CumulativeTime() + 10.0;
-                        board.setPlayer2CumulativeTime(finalTime);
-                        endGame(board.getPlayer1Name(), board.getPlayer1CumulativeTime(), 
-                               board.getPlayer2Name(), finalTime, false);
+                        endGame("Player 1", board.getPlayer1Time(), "Player 2", 0.0, false);
                         return;
                     }
                 }
-                // Update turn indicator every frame
-                turnText.setText("It's " + board.getCurrentPlayerName() + "'s turn");
             }
         };
         gameTimer.start();
@@ -116,7 +104,7 @@ public class MultiController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("multisum.fxml"));
             Parent root = loader.load();
             MultiSumController controller = loader.getController();
-            controller.setResults(p1Name, p1Time, p2Name, p2Time, teamWin);
+            controller.setResults(p1Name, p1Time, p2Name, p2Time, teamWin); // Current time only
 
             Stage stage = (Stage) grid.getScene().getWindow();
             if (stage == null) return;
