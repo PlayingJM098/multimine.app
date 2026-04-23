@@ -23,8 +23,6 @@ public class MultiBoard {
     private int player2Lives = 3;
     private double player1Time = 10.0;
     private double player2Time = 10.0;
-    private double player1CumulativeTime = 0.0;
-    private double player2CumulativeTime = 0.0;
     private String player1Name = "Player 1";
     private String player2Name = "Player 2";
 
@@ -44,15 +42,11 @@ public class MultiBoard {
     public void initializeBoard(int minesToPlace) {
         createBoard();
         safeTilesCount = (size * size) - minesToPlace;
-        placeMinesAfterFirstClick(minesToPlace); // Changed method name
         revealedSafeTiles = 0;
         minesCount = 0;
         firstClick = true; // Reset first click flag
     }
-    private void placeMinesAfterFirstClick(int minesToPlace) {
-        // Don't place mines yet - wait for first click
-        // Mines will be placed after first safe click
-    }
+    
     public void resetGameState() {
         revealedSafeTiles = 0;
         minesCount = 0;
@@ -62,8 +56,6 @@ public class MultiBoard {
         player2Lives = 3;
         player1Time = 10.0;
         player2Time = 10.0;
-        player1CumulativeTime = 0.0;
-        player2CumulativeTime = 0.0;
         firstClick = true; // ADD THIS LINE
         controller.updateUI();
     }
@@ -202,11 +194,9 @@ public class MultiBoard {
 
     private void playerHitMine() {
         if (player1Turn) {
-            player1CumulativeTime += (10.0 - player1Time);
             player1Lives--;
             controller.updatePlayer1Hearts(player1Lives);
         } else {
-            player2CumulativeTime += (10.0 - player2Time);
             player2Lives--;
             controller.updatePlayer2Hearts(player2Lives);
         }
@@ -239,7 +229,7 @@ public class MultiBoard {
     }
 
     public void endGame(boolean teamWin) {
-        controller.endGame(player1Name, player1CumulativeTime, player2Name, player2CumulativeTime, teamWin);
+        controller.endGame(player1Name, player1Time, player2Name, player2Time, teamWin);
     }
 
     public int countAdjacentMines(int row, int col) {
@@ -262,16 +252,11 @@ public class MultiBoard {
     public double getPlayer2Time() { return player2Time; }
     public Tile getTile(int r, int c) { return board[r][c]; }
     public int getSize() { return size; }
-    public String getPlayer1Name() { return player1Name; }
-    public String getPlayer2Name() { return player2Name; }
-    public double getPlayer1CumulativeTime() { return player1CumulativeTime; }
-    public double getPlayer2CumulativeTime() { return player2CumulativeTime; }
     public void setPlayer1Time(double time) { 
         this.player1Time = Math.max(0, time); // Prevent negative time
     }
     public void setPlayer2Time(double time) { 
         this.player2Time = Math.max(0, time); // Prevent negative time
     }
-    public void setPlayer1CumulativeTime(double time) { this.player1CumulativeTime = time; }
-    public void setPlayer2CumulativeTime(double time) { this.player2CumulativeTime = time; }
+    
 }
