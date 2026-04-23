@@ -13,16 +13,11 @@ public class MultiSumController {
     @FXML private Text titleText;
     @FXML private Text resultsText;
 
-    public void setResults(String p1Name, double p1TotalTime, String p2Name, double p2TotalTime, boolean teamWin) {
+    public void setResults(String p1Name, double p1Time, String p2Name, double p2Time, boolean teamWin) {
         if (teamWin) {
             titleText.setText("TEAM VICTORY!");
-            resultsText.setText(String.format("%s: %.1fs | %s: %.1fs", p1Name, p1TotalTime, p2Name, p2TotalTime));
-        } else if (p1TotalTime < p2TotalTime) {  // Lower total time = better (less time wasted)
-            titleText.setText(p1Name + " WINS!");
-            resultsText.setText(String.format("%s: %.1fs | %s: %.1fs", p1Name, p1TotalTime, p2Name, p2TotalTime));
         } else {
-            titleText.setText(p2Name + " WINS!");
-            resultsText.setText(String.format("%s: %.1fs | %s: %.1fs", p1Name, p1TotalTime, p2Name, p2TotalTime));
+            titleText.setText(p1Time < p2Time ? "🏆 " + p1Name + " Wins!" : "🏆 " + p2Name + " Wins!");
         }
     }
 
