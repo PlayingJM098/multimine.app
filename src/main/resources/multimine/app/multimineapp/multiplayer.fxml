@@ -14,12 +14,12 @@
          <children>
             <Text fx:id="timerText" layoutX="524.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="10.0s" wrappingWidth="30.13671875" />
             <Text fx:id="player2TimerText" layoutX="46.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="10.0s" />
-            <Text layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PlayingJM098">
+            <Text fx:id="player2NameText" layoutX="14.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PlayingJM098">
                <font>
                   <Font name="Courier New" size="17.0" />
                </font>
             </Text>
-            <Text layoutX="406.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="direct.proportion">
+            <Text fx:id="player1NameText" layoutX="406.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="direct.proportion">
                <font>
                   <Font name="Courier New" size="17.0" />
                </font>
