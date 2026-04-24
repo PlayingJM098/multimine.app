@@ -18,7 +18,7 @@ import javafx.util.Duration;
  * });
  * }</pre>
  * 
- * @author Your Name
+ * @author JM Rahon
  * @version 1.0
  */
 public class Stopwatch {
