@@ -6,76 +6,89 @@ import javafx.scene.layout.GridPane;
 import multimine.app.multimineapp.MultiController;
 import java.util.concurrent.ThreadLocalRandom;
 import multimine.app.multimineapp.SettingsController;
-
 /**
- * MultiBoard represents the game board for a two-player competitive Minesweeper variant.
- * Features turn-based gameplay where players alternate clicks (2 clicks per turn),
- * have limited lives (3 each), and time bonuses for safe clicks. The first click is
- * guaranteed safe with a 3x3 safe zone. Game ends when all safe tiles are revealed
- * (team win) or either player runs out of lives.
+ * Represents the multiplayer game board for the MultiMine game.
  * 
- * <p>Key mechanics:
+ * <p>This class manages the board state, player turns, mine placement,
+ * tile interactions, and win/lose conditions for a two-player game.</p>
+ * 
+ * <p>Features include:
  * <ul>
- * <li>Turn-based: 2 clicks per turn, then switch players</li>
- * <li>Lives system: Hit mine = lose 1 life (3 lives each)</li>
- * <li>Time bonuses: Safe click = +0.5s (capped at 10s)</li>
- * <li>First click safety: 3x3 area guaranteed safe + auto-flood fill</li>
- * <li>Flood fill reveal for zero-adjacent-mine tiles</li>
+ *     <li>First-click safety (guaranteed safe starting area)</li>
+ *     <li>Turn-based gameplay (2 clicks per turn)</li>
+ *     <li>Lives and time tracking per player</li>
+ *     <li>Flood-fill reveal for empty tiles</li>
  * </ul>
- * </p>
- * 
- * @author Your Name
- * @version 1.0
+ * </p
+ * @author JM Rahon
  */
 public class MultiBoard {
-    /** 2D array representing the game board tiles */
+
+    /** 2D array representing the board tiles */
     private Tile[][] board;
-    
-    /** Board dimensions (square grid: size x size) */
+
+    /** Size of the board (NxN) */
     private int size;
-    
-    /** Game asset images */
+
+    /** Images used for tile states */
     private Image hiddenTile, flagTile, bombTile, heartImage;
+
+    /** Images for number tiles (0–8 adjacent mines) */
     private Image[] numberTiles;
-    
-    /** UI components */
+
+    /** JavaFX GridPane used to render the board */
     private GridPane grid;
+
+    /** Controller used to update UI elements */
     private MultiController controller;
-    
-    /** Game state tracking */
+
+    /** Tracks if the first click has been made */
     private boolean firstClick = true;
+
+    /** Number of mines revealed */
     private int minesCount = 0;
+
+    /** Total number of safe tiles */
     private int safeTilesCount;
+
+    /** Number of revealed safe tiles */
     private int revealedSafeTiles = 0;
+
+    /** Number of clicks made in the current turn */
     private int clicksThisTurn = 0;
-    
-    /** Multiplayer state */
+
+    /** True if it is Player 1's turn */
     private boolean player1Turn = true;
+
+    /** Player lives */
     private int player1Lives = 3;
     private int player2Lives = 3;
+
+    /** Player timers (seconds) */
     private double player1Time = 10.0;
     private double player2Time = 10.0;
+
+    /** Player names */
     private String player1Name = "Player 1";
     private String player2Name = "Player 2";
-    
-    /** Visual settings */
+
+    /** Size of each tile in pixels */
     private double tileSize = 24.0;
 
     /**
-     * Constructs a new MultiBoard with the specified configuration.
-     * 
-     * @param size board size (square grid: size x size)
-     * @param hiddenTile image for unrevealed tiles
+     * Constructs a MultiBoard instance.
+     *
+     * @param size board size (NxN)
+     * @param hiddenTile image for hidden tiles
      * @param flagTile image for flagged tiles
-     * @param bombTile image for revealed mines
-     * @param heartImage image for life indicators
-     * @param numberTiles array of number images [0-8] for adjacent mine counts
-     * @param grid GridPane to render the board
-     * @param controller controller for UI updates and game flow
+     * @param bombTile image for mines
+     * @param heartImage image representing lives
+     * @param numberTiles images for numbered tiles
+     * @param grid GridPane used for rendering
+     * @param controller controller handling UI updates
      */
     public MultiBoard(int size, Image hiddenTile, Image flagTile, Image bombTile, Image heartImage,
-                     Image[] numberTiles, GridPane grid, MultiController controller) {
-        // In MultiBoard constructor/initialize:
+                      Image[] numberTiles, GridPane grid, MultiController controller) {
         this.player1Name = SettingsController.getPlayer1Name();
         this.player2Name = SettingsController.getPlayer2Name();
         this.size = size;
@@ -90,22 +103,20 @@ public class MultiBoard {
     }
 
     /**
-     * Initializes a new game board with the specified number of mines.
-     * Resets all game state and creates fresh tiles.
-     * 
-     * @param minesToPlace total number of mines to place on the board
+     * Initializes the board and resets counters.
+     *
+     * @param minesToPlace number of mines to place
      */
     public void initializeBoard(int minesToPlace) {
         createBoard();
         safeTilesCount = (size * size) - minesToPlace;
         revealedSafeTiles = 0;
         minesCount = 0;
-        firstClick = true; // Reset first click flag
+        firstClick = true;
     }
-    
+
     /**
-     * Resets game state for a new round while preserving board configuration.
-     * Restores lives, time, turns, and other gameplay variables.
+     * Resets the entire game state including players, timers, and turn.
      */
     public void resetGameState() {
         revealedSafeTiles = 0;
@@ -116,15 +127,57 @@ public class MultiBoard {
         player2Lives = 3;
         player1Time = 10.0;
         player2Time = 10.0;
-        firstClick = true; // ADD THIS LINE
+        firstClick = true;
         controller.updateUI();
     }
 
     /**
-     * Handles right-click (flag/unflag) on a tile.
-     * 
-     * @param row tile row (0 to size-1)
-     * @param col tile column (0 to size-1)
+     * Creates the board UI and initializes all tiles.
+     */
+    private void createBoard() {
+        grid.getChildren().clear();
+        grid.setPrefSize(tileSize * size, tileSize * size);
+
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                ImageView view = new ImageView(hiddenTile);
+                view.setFitWidth(tileSize);
+                view.setFitHeight(tileSize);
+                view.setPickOnBounds(true);
+
+                Tile tile = new Tile(row, col, view);
+                board[row][col] = tile;
+                grid.add(view, col, row);
+            }
+        }
+        setupClickHandlers();
+    }
+
+    /**
+     * Assigns mouse click handlers to each tile.
+     */
+    private void setupClickHandlers() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                int r = row, c = col;
+                Tile tile = board[row][col];
+
+                tile.getView().setOnMouseClicked(e -> {
+                    if (e.getButton() == javafx.scene.input.MouseButton.SECONDARY) {
+                        handleRightClick(r, c);
+                    } else {
+                        handleClick(r, c);
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * Handles right-click (flagging/unflagging).
+     *
+     * @param row tile row
+     * @param col tile column
      */
     public void handleRightClick(int row, int col) {
         Tile tile = getTile(row, col);
@@ -140,25 +193,22 @@ public class MultiBoard {
     }
 
     /**
-     * Handles left-click (reveal) on a tile. Implements first-click safety,
-     * mine detection, flood-fill reveal, and turn management.
-     * 
-     * @param row tile row (0 to size-1)
-     * @param col tile column (0 to size-1)
+     * Handles left-click actions including revealing tiles and mine detection.
+     *
+     * @param row tile row
+     * @param col tile column
      */
     public void handleClick(int row, int col) {
         Tile tile = getTile(row, col);
         if (tile.isRevealed() || tile.isFlagged()) return;
 
-        // FIRST CLICK SAFETY
         if (firstClick) {
             firstClick = false;
             ensureFirstClickSafe(row, col);
-            floodFillReveal(row, col); // Auto-reveal large safe area
-            revealedSafeTiles++; 
+            floodFillReveal(row, col);
+            revealedSafeTiles++;
             playerSafeClick();
         } else if (tile.hasMine()) {
-            // Regular mine hit (after first click)
             tile.reveal();
             tile.getView().setImage(bombTile);
             tile.getView().setDisable(true);
@@ -169,7 +219,6 @@ public class MultiBoard {
                 endGame(false);
             }
         } else {
-            // Regular safe click (after first click)
             floodFillReveal(row, col);
             playerSafeClick();
         }
@@ -178,32 +227,23 @@ public class MultiBoard {
     }
 
     /**
-     * Ensures the first click lands in a safe 3x3 area by forcing those tiles
-     * safe and placing all mines elsewhere. Called only on first click.
-     * 
-     * @param clickRow row of first click
-     * @param clickCol column of first click
+     * Ensures the first click and surrounding tiles are safe.
      */
     private void ensureFirstClickSafe(int clickRow, int clickCol) {
-        int minesToPlace = (size * size) - safeTilesCount; // Original mine count
+        int minesToPlace = (size * size) - safeTilesCount;
 
-        // Mark clicked tile + 8 neighbors as safe (3x3 area = 9 tiles)
         for (int r = Math.max(0, clickRow - 1); r <= Math.min(size - 1, clickRow + 1); r++) {
             for (int c = Math.max(0, clickCol - 1); c <= Math.min(size - 1, clickCol + 1); c++) {
-                board[r][c].setMine(false); // Force safe
+                board[r][c].setMine(false);
             }
         }
 
-        // Place mines everywhere else
         int placed = 0;
         while (placed < minesToPlace) {
             int r = ThreadLocalRandom.current().nextInt(size);
             int c = ThreadLocalRandom.current().nextInt(size);
 
-            // Skip the 3x3 safe zone
-            if (Math.abs(r - clickRow) <= 1 && Math.abs(c - clickCol) <= 1) {
-                continue;
-            }
+            if (Math.abs(r - clickRow) <= 1 && Math.abs(c - clickCol) <= 1) continue;
 
             if (!board[r][c].hasMine()) {
                 board[r][c].setMine(true);
@@ -213,12 +253,7 @@ public class MultiBoard {
     }
 
     /**
-     * Recursively reveals safe tiles using flood-fill algorithm.
-     * Reveals adjacent zero-mine tiles automatically. Checks win condition
-     * after each reveal.
-     * 
-     * @param row tile row to reveal
-     * @param col tile column to reveal
+     * Recursively reveals safe tiles using flood-fill.
      */
     private void floodFillReveal(int row, int col) {
         Tile tile = getTile(row, col);
@@ -226,13 +261,12 @@ public class MultiBoard {
         if (tile.isRevealed() || tile.hasMine() || tile.isFlagged()) return;
 
         tile.reveal();
-        revealedSafeTiles++; // count here
+        revealedSafeTiles++;
 
         int adjacentMines = countAdjacentMines(row, col);
         tile.getView().setImage(numberTiles[adjacentMines]);
         tile.getView().setDisable(true);
 
-        // ✅ CHECK WIN HERE (every reveal)
         if (revealedSafeTiles == safeTilesCount) {
             endGame(true);
             return;
@@ -249,10 +283,7 @@ public class MultiBoard {
         }
     }
 
-    /**
-     * Deducts a life from the current player when they hit a mine.
-     * Updates UI with new heart count.
-     */
+    /** Reduces life of the current player when hitting a mine */
     private void playerHitMine() {
         if (player1Turn) {
             player1Lives--;
@@ -264,38 +295,16 @@ public class MultiBoard {
         controller.updateUI();
     }
 
-    /**
-     * Awards time bonus (+0.5s, capped at 10s) to current player for safe click.
-     */
+    /** Rewards player with time when clicking a safe tile */
     private void playerSafeClick() {
         if (player1Turn) {
-            player1Time = Math.min(10.0, player1Time + 0.5); // Cap at 10s
+            player1Time = Math.min(10.0, player1Time + 0.5);
         } else {
-            player2Time = Math.min(10.0, player2Time + 0.5); // Cap at 10s
+            player2Time = Math.min(10.0, player2Time + 0.5);
         }
     }
 
-    /**
-     * Sets Player 1's name. Defaults to "Player 1" if empty string provided.
-     * 
-     * @param name Player 1's display name
-     */
-    public void setPlayer1Name(String name) { 
-        this.player1Name = name.isEmpty() ? "Player 1" : name; 
-    }
-
-    /**
-     * Sets Player 2's name. Defaults to "Player 2" if empty string provided.
-     * 
-     * @param name Player 2's display name
-     */
-    public void setPlayer2Name(String name) { 
-        this.player2Name = name.isEmpty() ? "Player 2" : name; 
-    }
-
-    /**
-     * Registers a player click and manages turn switching (2 clicks per turn).
-     */
+    /** Registers clicks and switches turn after 2 clicks */
     private void registerClick() {
         clicksThisTurn++;
         if (clicksThisTurn >= 2) {
@@ -304,38 +313,36 @@ public class MultiBoard {
         }
     }
 
-    /**
-     * Switches turn between Player 1 and Player 2. Updates UI.
-     */
+    /** Switches the current player's turn */
     private void switchTurn() {
         player1Turn = !player1Turn;
         controller.updateUI();
     }
 
     /**
-     * Checks if game is over (either player out of lives).
-     * 
-     * @return true if game over, false otherwise
+     * Checks if the game is over.
+     *
+     * @return true if any player has no lives left
      */
     public boolean isGameOver() {
         return player1Lives <= 0 || player2Lives <= 0;
     }
 
     /**
-     * Ends the game and notifies controller with final scores.
-     * 
-     * @param teamWin true if all safe tiles revealed (win), false if lives depleted (loss)
+     * Ends the game and notifies controller.
+     *
+     * @param teamWin true if players win, false if lose
      */
     public void endGame(boolean teamWin) {
         controller.endGame(player1Name, player1Time, player2Name, player2Time, teamWin);
     }
 
     /**
-     * Counts adjacent mines for a given tile (used for numbering).
-     * 
+     * Counts adjacent mines around a tile.
+     *
      * @param row tile row
      * @param col tile column
-     * @return number of adjacent mines (0-8)
+     * @return number of adjacent mines
      */
     public int countAdjacentMines(int row, int col) {
         int count = 0;
@@ -351,64 +358,35 @@ public class MultiBoard {
         return count;
     }
 
-    /**
-     * Sets the visual size of tiles.
-     * 
-     * @param size tile size in pixels
-     */
-    public void setTileSize(double size) {
-        this.tileSize = size;
-    }
+    /** Getter and setter methods */
 
-    /**
-     * Sets the board dimensions and reallocates the tile array.
-     * 
-     * @param size new board size (square grid)
-     */
+    public boolean isPlayer1Turn() { return player1Turn; }
+    public String getCurrentPlayerName() { return player1Turn ? player1Name : player2Name; }
+    public double getPlayer1Time() { return player1Time; }
+    public double getPlayer2Time() { return player2Time; }
+    public Tile getTile(int r, int c) { return board[r][c]; }
+    public int getSize() { return size; }
+
+    public void setTileSize(double size) { this.tileSize = size; }
+
     public void setBoardSize(int size) {
         this.size = size;
         this.board = new Tile[size][size];
     }
-    
-    /** @return true if it's Player 1's turn */
-    public boolean isPlayer1Turn() { return player1Turn; }
-    
-    /** @return current player's name */
-    public String getCurrentPlayerName() { return player1Turn ? player1Name : player2Name; }
-    
-    /** @return Player 1's current time */
-    public double getPlayer1Time() { return player1Time; }
-    
-    /** @return Player 2's current time */
-    public double getPlayer2Time() { return player2Time; }
-    
-    /**
-     * Gets tile at specified coordinates.
-     * 
-     * @param r row (0 to size-1)
-     * @param c column (0 to size-1)
-     * @return Tile at position (r,c)
-     */
-    public Tile getTile(int r, int c) { return board[r][c]; }
-    
-    /** @return board size */
-    public int getSize() { return size; }
-    
-    /**
-     * Sets Player 1's time (clamped to >= 0).
-     * 
-     * @param time new time value
-     */
-    public void setPlayer1Time(double time) { 
-        this.player1Time = Math.max(0, time); // Prevent negative time
+
+    public void setPlayer1Name(String name) {
+        this.player1Name = name.isEmpty() ? "Player 1" : name;
     }
-    
-    /**
-     * Sets Player 2's time (clamped to >= 0).
-     * 
-     * @param time new time value
-     */
-    public void setPlayer2Time(double time) { 
-        this.player2Time = Math.max(0, time); // Prevent negative time
+
+    public void setPlayer2Name(String name) {
+        this.player2Name = name.isEmpty() ? "Player 2" : name;
+    }
+
+    public void setPlayer1Time(double time) {
+        this.player1Time = Math.max(0, time);
+    }
+
+    public void setPlayer2Time(double time) {
+        this.player2Time = Math.max(0, time);
     }
 }
