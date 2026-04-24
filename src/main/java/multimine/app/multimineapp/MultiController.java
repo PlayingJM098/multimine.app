@@ -18,26 +18,46 @@ public class MultiController {
     @FXML private Text player2TimerText; 
     @FXML private GridPane grid;
     @FXML private Text turnText;
-    
-    @FXML private ImageView heart1, heart2, heart3;  // Player 1 hearts
-    @FXML private ImageView heart4, heart5, heart6;  // Player 2 hearts
+    @FXML private Text player1NameText, player2NameText; 
+    @FXML private ImageView heart1, heart2, heart3;  
+    @FXML private ImageView heart4, heart5, heart6;  
 
-    private final int SIZE = 15;
+    private int SIZE = 15;
     private Image[] numberTiles = new Image[9];
     private Image flagTile, hiddenTile, bombTile, heartImage;
     private MultiBoard board;
     private AnimationTimer gameTimer;
-
+    private final double BOARD_WIDTH = 360.0;  
+    private double TILE_SIZE;
     @FXML
     public void initialize() {
         loadImages();
+        SIZE = getSizeForDifficulty();
+        TILE_SIZE = BOARD_WIDTH / SIZE;
+        String p1Name = SettingsController.getPlayer1Name();  
+        String p2Name = SettingsController.getPlayer2Name();  
+
         board = new MultiBoard(SIZE, hiddenTile, flagTile, bombTile, heartImage, 
-                             numberTiles, grid, this);
-        board.initializeBoard(10);
+                              numberTiles, grid, this);
+        board.setPlayer1Name(p1Name); 
+        board.setPlayer2Name(p2Name);  
+
+        player1NameText.setText(p1Name);    
+        player2NameText.setText(p2Name);     
+        board.setTileSize(TILE_SIZE);  
+        board.initializeBoard(getMinesForDifficulty());
+        board.initializeBoard(20);
         board.resetGameState();
         startPlayerTimer();
     }
-
+    private int getMinesForDifficulty() {
+        return switch(SettingsController.getDifficulty()) {
+            case "Easy" -> 20;
+            case "Medium" -> 40;
+            case "Hard" -> 60;
+            default -> 20;
+        };
+    }
     private void loadImages() {
         hiddenTile = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/tile.png")));
         bombTile = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/img/bomb.png")));
@@ -79,8 +99,9 @@ public class MultiController {
 
     public void updateUI() {
         turnText.setText("It's " + board.getCurrentPlayerName() + "'s turn");
-        timerText.setText(String.format("P1: %.1fs", board.getPlayer1Time()));
-        player2TimerText.setText(String.format("P2: %.1fs", board.getPlayer2Time()));
+
+        player2TimerText.setText(String.format("P2: %.1fs", board.getPlayer2Time())); 
+        timerText.setText(String.format("P1: %.1fs", board.getPlayer1Time()));         
     }
 
     public void updatePlayer1Hearts(int lives) {
@@ -94,7 +115,35 @@ public class MultiController {
         heart5.setVisible(lives >= 2);
         heart6.setVisible(lives >= 3);
     }
+    private int getSizeForDifficulty() {
+        return switch (SettingsController.getDifficulty()) {
+            case "Easy" -> 15;    
+            case "Medium" -> 20;  
+            case "Hard" -> 25;    
+            default -> 15;
+        };
+    }
+    public void restartBoard() {
+        SIZE = getSizeForDifficulty();
+        TILE_SIZE = BOARD_WIDTH / SIZE;
 
+        grid.getChildren().clear();
+
+        board = new MultiBoard(
+            SIZE,
+            hiddenTile,
+            flagTile,
+            bombTile,
+            heartImage,
+            numberTiles,
+            grid,
+            this
+        );
+
+        board.setTileSize(TILE_SIZE);
+        board.initializeBoard(getMinesForDifficulty());
+        board.resetGameState();
+    }
     public void endGame(String p1Name, double p1Time, String p2Name, double p2Time, boolean teamWin) {
         if (gameTimer != null) {
             gameTimer.stop();
@@ -104,7 +153,7 @@ public class MultiController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("multisum.fxml"));
             Parent root = loader.load();
             MultiSumController controller = loader.getController();
-            controller.setResults(p1Name, p1Time, p2Name, p2Time, teamWin); // Current time only
+            controller.setResults(p1Name, p1Time, p2Name, p2Time, teamWin); 
 
             Stage stage = (Stage) grid.getScene().getWindow();
             if (stage == null) return;
