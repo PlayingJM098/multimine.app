@@ -7,15 +7,15 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Tile;           
 import model.Stopwatch;
 import model.ZenBoard;
 import java.util.Objects;
+import javafx.scene.text.Text;
 
 public class ZenController {
-
+    @FXML private Text titleText;
     @FXML private Text timerText;
     @FXML private GridPane grid;
 
@@ -23,12 +23,13 @@ public class ZenController {
     @FXML private ImageView heart2;
     @FXML private ImageView heart3;
 
-    private final int SIZE = 15;
+    private int SIZE = 15;
     private Image[] numberTiles = new Image[9];
     private Image flagTile;
     private ZenBoard board;
     private Stopwatch stopwatch = new Stopwatch();
-
+    private final double BOARD_WIDTH = 360.0;
+    private double tileSize;
     private Image hiddenTile =
             new Image(Objects.requireNonNull(
                     getClass().getResourceAsStream("/img/tile.png")));
@@ -39,15 +40,22 @@ public class ZenController {
 
     @FXML
     public void initialize() {
+        String p1Name = SettingsController.getPlayer1Name();
+        titleText.setText(p1Name);
         flagTile = new Image(Objects.requireNonNull(
                 getClass().getResourceAsStream("/img/flag.png")));
         
         loadNumberTiles();
+        SIZE = switch(SettingsController.getDifficulty()) {
+            case "Easy" -> 15;
+            case "Medium" -> 20;
+            case "Hard" -> 25;
+            default -> 15;
+        };
+        tileSize = BOARD_WIDTH / SIZE;
+        board = new ZenBoard(SIZE, tileSize, hiddenTile, flagTile, bombTile, numberTiles, grid, this, stopwatch);
         
-        board = new ZenBoard(SIZE, hiddenTile, flagTile, bombTile, numberTiles, grid, 
-                           this, stopwatch);
-        
-        board.initializeBoard(10);
+        board.initializeBoard(getMinesForSize());
         setupClickHandlers();
         
         stopwatch.start(() ->
@@ -78,7 +86,14 @@ public class ZenController {
             }
         }
     }
-
+    private int getMinesForSize() {
+        return switch (SIZE) {
+            case 15 -> 10;
+            case 20 -> 20;
+            case 25 -> 30;
+            default -> 10;
+        };
+    }
     public void updateHearts(int minesCount) {
         if (minesCount == 1) heart3.setVisible(false);
         if (minesCount == 2) heart2.setVisible(false);
@@ -95,7 +110,6 @@ public class ZenController {
             if (tile != null) {
                 stage = (Stage) tile.getScene().getWindow();
             } else {
-                // For win condition, get stage from current scene
                 stage = (Stage) grid.getScene().getWindow();
             }
             stage.setScene(new Scene(root));
