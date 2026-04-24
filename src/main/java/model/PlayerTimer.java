@@ -15,7 +15,7 @@ import javafx.animation.AnimationTimer;
  * timer.start();
  * }</pre>
  * 
- * @author Your Name
+ * @author JM Rahon
  * @version 1.0
  */
 public class PlayerTimer {
