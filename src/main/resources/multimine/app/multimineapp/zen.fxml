@@ -24,7 +24,7 @@
    <bottom>
       <AnchorPane prefHeight="105.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Text layoutX="145.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PLAYINGJM098">
+            <Text fx:id="titleText" layoutX="145.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PLAYINGJM098">
                <font>
                   <Font name="Courier New" size="43.0" />
                </font>
