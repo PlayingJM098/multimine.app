@@ -7,7 +7,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="multimine.app.multimineapp.MainController">
    <top>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PLAYINGJM098" textAlignment="CENTER" wrappingWidth="414.609375" BorderPane.alignment="CENTER">
+      <Text fx:id="titleText" strokeType="OUTSIDE" strokeWidth="0.0" text="PLAYINGJM098" textAlignment="CENTER" wrappingWidth="414.609375" BorderPane.alignment="CENTER">
          <font>
             <Font name="System Bold" size="30.0" />
          </font>
