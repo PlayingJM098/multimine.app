@@ -9,9 +9,16 @@ import javafx.scene.Parent;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import java.io.IOException;
+import javafx.scene.text.Text;
 
 public class MainController {
-
+    @FXML
+    private Text titleText;
+    @FXML
+    public void initialize() {
+        String p1Name = SettingsController.getPlayer1Name();
+        titleText.setText(p1Name);
+    }
     public void openHelp(ActionEvent event) throws IOException {
 
         Parent root = FXMLLoader.load(
